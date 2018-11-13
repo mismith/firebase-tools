@@ -18,7 +18,7 @@ export default class FirebaseDynamicLinks {
     this.domain = domain;
   }
 
-  async getShortLink(url, unguessable = false) {
+  async getShortLink(url, unguessable = false): Promise<string> {
     const ENDPOINT = 'https://firebasedynamiclinks.googleapis.com/v1/shortLinks';
     const { data: { shortLink } } = await axios.post(`${ENDPOINT}?key=${this.apiKey}`, {
       dynamicLinkInfo: {

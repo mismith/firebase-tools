@@ -1,5 +1,3 @@
 import FirebaseInvites from './firebase-invites';
 
-export {
-  FirebaseInvites,
-};
+export { FirebaseInvites };
