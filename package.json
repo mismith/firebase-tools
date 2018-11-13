@@ -1,0 +1,33 @@
+{
+  "name": "@mismith/firebase-tools",
+  "description": "Various helpers and utilities for dealing with Firebase in both the browser and server-side within cloud functions.",
+  "version": "1.0.0",
+  "main": "src/client/index.js",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "dev": "npm run build"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "tslint": "^5.8.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "typescript": "^2.5.3"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mismith/firebase-tools.git"
+  },
+  "keywords": [
+    "firebase",
+    "functions",
+    "invite",
+    "invitation",
+    "dynamic",
+    "link",
+    "web"
+  ]
+}
