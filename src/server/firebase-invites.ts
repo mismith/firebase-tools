@@ -7,28 +7,11 @@ export default class FirebaseInvites {
 
   constructor(database, config = {}) {
     this.database = database;
-    this.config = {};
-  }
-
-  async buildLink(snap, ctx): Promise<string> {
-    return ctx.params.inviteId;
-  }
-
-  async buildInvitation(link, snap, ctx): Promise<object> {
-    return {
-      ...snap.val(),
-      link,
-    };
-  }
-
-  async send(invitation, snap, ctx) {
-    // @STUB: extend to implement
+    this.config = config;
   }
 
   async handleCreate(snap, ctx) {
-    const link = await this.buildLink(snap, ctx);
-    const invitation = await this.buildInvitation(link, snap, ctx);
-    await this.send(invitation, snap, ctx);
+    // @STUB: extend to implement
   }
 
   async handleAccept(snap, ctx) {
@@ -44,7 +27,7 @@ export default class FirebaseInvites {
   }
 
   async handleError(err, snap, ctx) {
-    // @STUB: extend to implement
+    console.error(err, snap.val(), ctx);
   }
 
   hook(path = 'invites') {

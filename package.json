@@ -2,7 +2,8 @@
   "name": "@mismith/firebase-tools",
   "version": "1.0.1",
   "description": "Various helpers and utilities for dealing with Firebase in both the browser and server-side within cloud functions.",
-  "main": "src/index.js",
+  "main": "dist/client/index.js",
+  "types": "dist/client/index.d.js",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
