@@ -17,9 +17,9 @@ export default class FirebaseInvites {
     const created = new Date();
     const expires = this.options.expiry && new Date(created.getTime() + this.options.expiry);
     const inviteRef = await this.ref.push({
-      [keys.email]: invitee,
-      [keys.invitedBy]: inviter,
       [keys.payload]: payload,
+      [keys.email]: invitee,
+      [keys.createdBy]: inviter,
       [keys.created]: created.toISOString(),
       [keys.expires]: expires && expires.toISOString(),
     });

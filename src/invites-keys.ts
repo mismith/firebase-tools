@@ -1,9 +1,9 @@
 export default {
   link: 'link',
   email: 'email',
-  invitedBy: 'invitedBy',
   payload: 'payload',
   created: 'created',
+  createdBy: 'createdBy',
   expires: 'expires',
   accepted: 'accepted',
   acceptedBy: 'acceptedBy',
