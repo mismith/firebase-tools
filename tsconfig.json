@@ -1,12 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "es6"],
-    "module": "commonjs",
+    "lib": ["es6"],
+    "target": "es5",
     "outDir": "dist",
-    "declaration": true,
-    "target": "es5"
+    "declaration": true
   },
-  "compileOnSave": true,
   "include": [
     "src"
   ]
