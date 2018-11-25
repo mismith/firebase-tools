@@ -6,6 +6,8 @@
   "types": "dist/client/index.d.ts",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
+    "test": "jest",
+    "test:dev": "yarn test --watchAll",
     "build": "tsc",
     "dev": "tsc -w",
     "compile": "rm -rf dist && npm run build",
@@ -18,10 +20,13 @@
     "axios": "^0.18.0"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.9",
     "@types/node": "^10.12.8",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
     "tslint": "^5.8.0",
     "tslint-config-airbnb": "^5.11.0",
-    "typescript": "^2.5.3"
+    "typescript": "^3.1.6"
   },
   "keywords": [
     "firebase",

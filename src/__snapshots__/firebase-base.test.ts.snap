@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provides all required keys 1`] = `
+Array [
+  "link",
+  "email",
+  "payload",
+  "created",
+  "createdBy",
+  "expires",
+  "accepted",
+  "acceptedBy",
+  "cancelled",
+]
+`;
