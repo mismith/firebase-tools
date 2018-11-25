@@ -2,14 +2,23 @@
 
 exports[`provides all required keys 1`] = `
 Array [
-  "link",
-  "email",
   "payload",
   "created",
   "createdBy",
+  "cancelled",
   "expires",
   "accepted",
   "acceptedBy",
-  "cancelled",
+]
+`;
+
+exports[`status reporting provides all required statuses 1`] = `
+Array [
+  "CREATED",
+  "CANCELLED",
+  "EXPIRED",
+  "ACCEPTED",
+  "DELETED",
+  "UNKNOWN",
 ]
 `;

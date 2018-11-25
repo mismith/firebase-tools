@@ -25,15 +25,15 @@ export default class FirebaseInvites extends FirebaseBase {
     });
   }
 
-  async accept(inviteId) {
-    return this.ref.child(inviteId).update({
-      [FirebaseInvites.keys.accepted]: FirebaseInvites.getDateString(),
-    });
-  }
-
   async cancel(inviteId) {
     return this.ref.child(inviteId).update({
       [FirebaseInvites.keys.cancelled]: FirebaseInvites.getDateString(),
+    });
+  }
+
+  async accept(inviteId) {
+    return this.ref.child(inviteId).update({
+      [FirebaseInvites.keys.accepted]: FirebaseInvites.getDateString(),
     });
   }
 

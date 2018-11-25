@@ -41,13 +41,21 @@ export default class FirebaseInvites extends FirebaseBase {
     return {
       onUpdate: ref.onUpdate(async ({ before, after }, ctx) => {
         try {
+          const invite = after.val();
+
+          // sending (and resending)
           if (before.child(FirebaseInvites.keys.created).val() !== after.child(FirebaseInvites.keys.created).val()) {
+            // prevent resending accepted invites
+            if (FirebaseInvites.isAccepted(invite)) throw new Error('invite already accepted');
+
             const created = FirebaseInvites.getDate(after.child(FirebaseInvites.keys.created).val());
             const expires = this.config.expiry && FirebaseInvites.getDate(created.getTime() + this.config.expiry);
 
             await after.ref.update({
               [FirebaseInvites.keys.createdBy]: ctx.auth.uid,
               [FirebaseInvites.keys.expires]: (expires && FirebaseInvites.getDateString(expires)) || null,
+              [FirebaseInvites.keys.cancelled]: null,
+              [FirebaseInvites.keys.accepted]: null,
             });
             const snap = await after.ref.once('value');
 
@@ -58,14 +66,21 @@ export default class FirebaseInvites extends FirebaseBase {
             }
           }
 
-          if (!before.child(FirebaseInvites.keys.accepted).exists() && after.child(FirebaseInvites.keys.accepted).exists()) {
-            const expires = FirebaseInvites.getDate(after.child(FirebaseInvites.keys.expires).val());
-            const isExpired = FirebaseInvites.getDate().getTime() > expires.getTime();
-            if (isExpired) throw new Error('invite has expired');
+          // cancelling
+          if (!before.child(FirebaseInvites.keys.cancelled).exists() && after.child(FirebaseInvites.keys.cancelled).exists()) {
+            // prevent cancelling accepted invites
+            if (FirebaseInvites.isAccepted(invite)) throw new Error('invite already accepted');
 
-            const cancelled = FirebaseInvites.getDate(after.child(FirebaseInvites.keys.cancelled).val());
-            const isCancelled = FirebaseInvites.getDate().getTime() > cancelled.getTime();
-            if (isCancelled) throw new Error('invite was cancelled');
+            return this.handleCancel(after, ctx);
+          }
+
+          // accepting
+          if (!before.child(FirebaseInvites.keys.accepted).exists() && after.child(FirebaseInvites.keys.accepted).exists()) {
+            // prevent accepting expired invites
+            if (FirebaseInvites.isExpired(invite)) throw new Error('invite has expired');
+
+            // prevent accepting cancelled invites
+            if (FirebaseInvites.isCancelled(invite)) throw new Error('invite was cancelled');
 
             await after.ref.update({
               [FirebaseInvites.keys.acceptedBy]: ctx.auth.uid,
@@ -74,16 +89,13 @@ export default class FirebaseInvites extends FirebaseBase {
 
             return this.handleAccept(snap, ctx);
           }
-
-          if (!before.child(FirebaseInvites.keys.cancelled).exists() && after.child(FirebaseInvites.keys.cancelled).exists()) {
-            return this.handleCancel(after, ctx);
-          }
         } catch (err) {
           return this.handleError(err, after, ctx);
         }
       }),
       onDelete: ref.onDelete(async (snap, ctx) => {
         try {
+          // deleting
           return this.handleDelete(snap, ctx);
         } catch (err) {
           return this.handleError(err, snap, ctx);
