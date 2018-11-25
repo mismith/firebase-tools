@@ -1,6 +1,6 @@
 {
   "name": "@mismith/firebase-tools",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Various helpers and utilities for dealing with Firebase in both the browser and server-side within cloud functions.",
   "main": "dist/client/index.js",
   "types": "dist/client/index.d.ts",
