@@ -1,42 +1,39 @@
-import keys from '../invites-keys';
+import FirebaseBase from '../firebase-base';
 
-export default class FirebaseInvites {
-  static keys = keys;
+export default class FirebaseInvites extends FirebaseBase {
   ref;
-  options;
 
-  constructor(invitesRef, options = {}) {
+  constructor(invitesRef) {
+    super();
+
     this.ref = invitesRef;
-    this.options = {
-      expiry: 2 * 24 * 60 * 60 * 1000, // 2 days
-      ...options,
-    };
   }
 
-  async create(invitee, inviter, payload = {}) {
-    const created = new Date();
-    const expires = this.options.expiry && new Date(created.getTime() + this.options.expiry);
+  async create(payload = {}) {
     const inviteRef = await this.ref.push({
-      [keys.payload]: payload,
-      [keys.email]: invitee,
-      [keys.createdBy]: inviter,
-      [keys.created]: created.toISOString(),
-      [keys.expires]: expires && expires.toISOString(),
+      [FirebaseInvites.keys.created]: FirebaseInvites.getDateString(),
+      [FirebaseInvites.keys.payload]: payload || null,
     });
     const inviteId = inviteRef.key;
     return inviteId;
   }
 
-  async accept(inviteId, acceptedBy) {
+  async resend(inviteId, payload = {}) {
     return this.ref.child(inviteId).update({
-      [keys.accepted]: new Date().toISOString(),
-      [keys.acceptedBy]: acceptedBy,
+      [FirebaseInvites.keys.created]: FirebaseInvites.getDateString(),
+      [FirebaseInvites.keys.payload]: payload || null,
+    });
+  }
+
+  async accept(inviteId) {
+    return this.ref.child(inviteId).update({
+      [FirebaseInvites.keys.accepted]: FirebaseInvites.getDateString(),
     });
   }
 
   async cancel(inviteId) {
     return this.ref.child(inviteId).update({
-      [keys.cancelled]: new Date().toISOString(),
+      [FirebaseInvites.keys.cancelled]: FirebaseInvites.getDateString(),
     });
   }
 
