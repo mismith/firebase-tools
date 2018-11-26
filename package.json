@@ -6,10 +6,9 @@
   "types": "dist/client/index.d.ts",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "test": "jest",
-    "test:dev": "yarn test --watchAll",
     "build": "tsc",
-    "dev": "tsc -w",
+    "test": "jest",
+    "dev": "jest --watchAll",
     "compile": "rm -rf dist && npm run build",
     "prepublishOnly": "npm run compile"
   },

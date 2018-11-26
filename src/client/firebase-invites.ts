@@ -1,6 +1,6 @@
-import FirebaseBase from '../firebase-base';
+import FirebaseInvitesBase from '../firebase-invites-base';
 
-export default class FirebaseInvites extends FirebaseBase {
+export default class FirebaseInvites extends FirebaseInvitesBase {
   ref;
 
   constructor(invitesRef) {

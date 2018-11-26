@@ -1,4 +1,4 @@
-export default class FirebaseBase {
+export default abstract class FirebaseInvitesBase {
   static keys = {
     payload: 'payload',
     created: 'created',
