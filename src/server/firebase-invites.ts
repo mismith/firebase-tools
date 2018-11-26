@@ -38,36 +38,50 @@ export default class FirebaseInvites extends FirebaseInvitesBase {
 
   hook(path = 'invites') {
     const ref = this.database.ref(`${path}/{inviteId}`);
+    const send = async (after, ctx) => {
+      const created = FirebaseInvites.getDate(after.child(FirebaseInvites.keys.created).val());
+      const expires = this.config.expiry && FirebaseInvites.getDate(created.getTime() + this.config.expiry);
+
+      await after.ref.update({
+        [FirebaseInvites.keys.createdBy]: ctx.auth.uid,
+        [FirebaseInvites.keys.expires]: (expires && FirebaseInvites.getDateString(expires)) || null,
+        [FirebaseInvites.keys.cancelled]: null,
+        [FirebaseInvites.keys.accepted]: null,
+      });
+      const snap = await after.ref.once('value');
+
+      return snap;
+    }
+
     return {
+      onCreate: ref.onCreate(async (after, ctx) => {
+        try {
+          // sending
+          if (after.child(FirebaseInvites.keys.created).val()) {
+            const snap = await send(after, ctx);
+
+            return this.handleCreate(snap, ctx);
+          }
+        } catch (err) {
+          return this.handleError(err, after, ctx);
+        }
+      }),
       onUpdate: ref.onUpdate(async ({ before, after }, ctx) => {
         try {
           const invite = after.val();
 
-          // sending (and resending)
+          // resending
           if (before.child(FirebaseInvites.keys.created).val() !== after.child(FirebaseInvites.keys.created).val()) {
             // prevent resending accepted invites
             if (FirebaseInvites.isAccepted(invite)) throw new Error('invite already accepted');
 
-            const created = FirebaseInvites.getDate(after.child(FirebaseInvites.keys.created).val());
-            const expires = this.config.expiry && FirebaseInvites.getDate(created.getTime() + this.config.expiry);
+            const snap = await send(after, ctx);
 
-            await after.ref.update({
-              [FirebaseInvites.keys.createdBy]: ctx.auth.uid,
-              [FirebaseInvites.keys.expires]: (expires && FirebaseInvites.getDateString(expires)) || null,
-              [FirebaseInvites.keys.cancelled]: null,
-              [FirebaseInvites.keys.accepted]: null,
-            });
-            const snap = await after.ref.once('value');
-
-            if (!before.child(FirebaseInvites.keys.created).exists()) {
-              return this.handleCreate(snap, ctx);
-            } else {
-              return this.handleResend(snap, ctx);
-            }
+            return this.handleResend(snap, ctx);
           }
 
           // cancelling
-          if (!before.child(FirebaseInvites.keys.cancelled).exists() && after.child(FirebaseInvites.keys.cancelled).exists()) {
+          if (before.child(FirebaseInvites.keys.cancelled).val() !== after.child(FirebaseInvites.keys.cancelled).val()) {
             // prevent cancelling accepted invites
             if (FirebaseInvites.isAccepted(invite)) throw new Error('invite already accepted');
 
@@ -75,7 +89,7 @@ export default class FirebaseInvites extends FirebaseInvitesBase {
           }
 
           // accepting
-          if (!before.child(FirebaseInvites.keys.accepted).exists() && after.child(FirebaseInvites.keys.accepted).exists()) {
+          if (before.child(FirebaseInvites.keys.accepted).val() !== after.child(FirebaseInvites.keys.accepted).val()) {
             // prevent accepting expired invites
             if (FirebaseInvites.isExpired(invite)) throw new Error('invite has expired');
 
@@ -93,12 +107,12 @@ export default class FirebaseInvites extends FirebaseInvitesBase {
           return this.handleError(err, after, ctx);
         }
       }),
-      onDelete: ref.onDelete(async (snap, ctx) => {
+      onDelete: ref.onDelete(async (before, ctx) => {
         try {
           // deleting
-          return this.handleDelete(snap, ctx);
+          return this.handleDelete(before, ctx);
         } catch (err) {
-          return this.handleError(err, snap, ctx);
+          return this.handleError(err, before, ctx);
         }
       }),
     };
