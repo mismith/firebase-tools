@@ -62,4 +62,8 @@ export default abstract class FirebaseInvitesBase {
       return this.status.UNKNOWN;
     }
   }
+
+  static is(invite, ...statuses) {
+    return statuses.indexOf(this.getStatus(invite)) >= 0;
+  }
 }

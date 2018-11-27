@@ -45,29 +45,35 @@ describe('status reporting', () => {
     invite.created = timestamp;
     expect(FirebaseInvitesBase.isCreated(invite)).toBe(true);
     expect(FirebaseInvitesBase.getStatus(invite)).toBe(FirebaseInvitesBase.status.CREATED);
+    expect(FirebaseInvitesBase.is(invite, FirebaseInvitesBase.status.CREATED)).toBe(true);
   });
   it('detects cancelled', () => {
     invite.cancelled = timestamp;
     expect(FirebaseInvitesBase.isCancelled(invite)).toBe(true);
     expect(FirebaseInvitesBase.getStatus(invite)).toBe(FirebaseInvitesBase.status.CANCELLED);
+    expect(FirebaseInvitesBase.is(invite, FirebaseInvitesBase.status.CANCELLED)).toBe(true);
   });
   it('detects expired', () => {
     invite.expires = timestamp;
     expect(FirebaseInvitesBase.isExpired(invite)).toBe(true);
     expect(FirebaseInvitesBase.getStatus(invite)).toBe(FirebaseInvitesBase.status.EXPIRED);
+    expect(FirebaseInvitesBase.is(invite, FirebaseInvitesBase.status.EXPIRED)).toBe(true);
   });
   it('detects accepted', () => {
     invite.accepted = timestamp;
     expect(FirebaseInvitesBase.isAccepted(invite)).toBe(true);
     expect(FirebaseInvitesBase.getStatus(invite)).toBe(FirebaseInvitesBase.status.ACCEPTED);
+    expect(FirebaseInvitesBase.is(invite, FirebaseInvitesBase.status.ACCEPTED)).toBe(true);
   });
   it('detects deleted', () => {
     const deletedInvite = null;
     expect(FirebaseInvitesBase.isDeleted(deletedInvite)).toBe(true);
     expect(FirebaseInvitesBase.getStatus(deletedInvite)).toBe(FirebaseInvitesBase.status.DELETED);
+    expect(FirebaseInvitesBase.is(deletedInvite, FirebaseInvitesBase.status.DELETED)).toBe(true);
   });
   it('detects unknown', () => {
     const invalidInvite = {};
     expect(FirebaseInvitesBase.getStatus(invalidInvite)).toBe(FirebaseInvitesBase.status.UNKNOWN);
+    expect(FirebaseInvitesBase.is(invalidInvite, FirebaseInvitesBase.status.UNKNOWN)).toBe(true);
   });
 });
