@@ -18,10 +18,9 @@ export default class FirebaseInvites extends FirebaseInvitesBase {
     return inviteId;
   }
 
-  async resend(inviteId, payload = {}) {
+  async resend(inviteId) {
     return this.ref.child(inviteId).update({
       [FirebaseInvites.keys.created]: FirebaseInvites.getDateString(),
-      [FirebaseInvites.keys.payload]: payload || null,
     });
   }
 
